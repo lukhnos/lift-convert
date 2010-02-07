@@ -6,7 +6,10 @@ One reason we choose to use WeSay is because it comes with collaboration feature
 
 ## How to Use It
 
-1.  git clone this project
+1.  git clone this project:
+
+        git clone git://github.com/lukhnos/lift-convert.git
+        
 2.  Get a copy of the nan-tw language source at either:
 
     *   http://public.languagedepot.org/projects/show/nan-tw (you'll need to request for its access from the administrator, Pektiong Tan), or
