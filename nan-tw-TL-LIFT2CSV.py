@@ -61,6 +61,8 @@ current_tag = ""
 text_data = ""
 start_form = False
 
+dedup_table = {}
+
 # 3 handler functions
 def start_element(name, attrs):
     global current_tag
@@ -77,6 +79,7 @@ def start_element(name, attrs):
 def end_element(name):
     global text_data
     global start_form
+    global dedup_table
 
     if name == 'text' and start_form:
         start_form = False
@@ -87,7 +90,13 @@ def end_element(name):
         if len(kv) > 1:        
             k = process_key(kv[0])
             v = process_value(kv[1])
-            print("%s,%s,1" % (k, v))
+            
+            combined_kv = "%s%s" % (k, v)
+            if dedup_table.has_key(combined_kv):
+                sys.stderr.write("duplicated: %s %s\n" % (k, v))
+            else:
+                dedup_table[combined_kv] = True
+                print("%s,%s,1" % (k, v))
         else:
             sys.stderr.write("ignored: %s\n" % line)
 
