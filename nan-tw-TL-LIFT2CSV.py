@@ -6,6 +6,26 @@ import xml.parsers.expat
 
 # This script converts nan.lift to the CSV format
 
+
+OU_RE = re.compile("ou")
+CH_RE = re.compile("^ch")
+OE_RE = re.compile("oe")
+OA_RE = re.compile("oa")
+EK_RE = re.compile("ek(.?)$")
+ENG_RE = re.compile("eng(.?)$")
+OH_RE = re.compile("oh(.?)$")
+
+def to_tl(s):
+    r = OU_RE.sub("oo", s)
+    r = CH_RE.sub("ts", r)
+    r = OE_RE.sub("ue", r)
+    r = OA_RE.sub("ue", r)
+    r = EK_RE.sub("ik\g<1>", r)
+    r = ENG_RE.sub("ing\g<1>", r)
+    r = OH_RE.sub("ouh\g<1>", r)
+    return r
+
+
 whitespace_re = re.compile("\s+")
 
 decompose_lookup = { "á":"a2", "à":"a3", "â":"a5", "ǎ":"a6", "ā":"a7", "a̍":"a8", "a̋":"a9", "ă":"a9", "é":"e2", "è":"e3", "ê":"e5", "ě":"e6", "ē":"e7", "e̍":"e8", "e̋":"e9", "ĕ":"e9", "í":"i2", "ì":"i3", "î":"i5", "ǐ":"i6", "ī":"i7", "i̍":"i8", "i̋":"i9", "ĭ":"i9", "ḿ":"m2", "m̀":"m3", "m̂":"m5", "m̌":"m6", "m̄":"m7", "m̍":"m8", "m̋":"m9", "m̆":"m9", "ń":"n2", "ǹ":"n3", "n̂":"n5", "ň":"n6", "n̄":"n7", "n̍":"n8", "n̋":"n9", "n̆":"n9", "ó":"o2", "ò":"o3", "ô":"o5", "ǒ":"o6", "ō":"o7", "o̍":"o8", "ő":"o9", "ŏ":"o9", "o͘":"oo", "ó͘":"oo2", "ò͘":"oo3", "ô͘":"oo5", "ǒ͘":"oo6", "ō͘":"oo7", "o̍͘":"oo8", "ő͘":"oo9", "ŏ͘":"oo9", "ú":"u2", "ù":"u3", "û":"u5", "ǔ":"u6", "ū":"u7", "u̍":"u8", "ű":"u9", "ŭ":"u9", "Á":"A2", "À":"A3", "Â":"A5", "Ǎ":"A6", "Ā":"A7", "A̍":"A8", "A̋":"A9", "Ă":"A9", "É":"E2", "È":"E3", "Ê":"E5", "Ě":"E6", "Ē":"E7", "E̍":"E8", "E̋":"E9", "Ĕ":"E9", "Í":"I2", "Ì":"I3", "Î":"I5", "Ǐ":"I6", "Ī":"I7", "I̍":"I8", "I̋":"I9", "Ĭ":"I9", "Ḿ":"M2", "M̀":"M3", "M̂":"M5", "M̌":"M6", "M̄":"M7", "M̍":"M8", "M̋":"M9", "M̆":"M9", "Ń":"N2", "Ǹ":"N3", "N̂":"N5", "Ň":"N6", "N̄":"N7", "N̍":"N8", "N̋":"N9", "N̆":"N9", "Ó":"O2", "Ò":"O3", "Ô":"O5", "Ǒ":"O6", "Ō":"O7", "O̍":"O8", "Ő":"O9", "Ŏ":"O9", "O͘":"Oo", "Ó͘":"Oo2", "Ò͘":"Oo3", "Ô͘":"Oo5", "Ǒ͘":"Oo6", "Ō͘":"Oo7", "O̍͘":"Oo8", "Ő͘":"Oo9", "Ŏ͘":"Oo9", "Ú":"U2", "Ù":"U3", "Û":"U5", "Ǔ":"U6", "Ū":"U7", "U̍":"U8", "Ű":"U9", "Ŭ":"U9" }
@@ -88,7 +108,12 @@ def end_element(name):
         kv = sanitized_line.split(" ")
 
         if len(kv) > 1:        
-            k = process_key(kv[0])
+            orig_k = process_key(kv[0])
+            orig_syls = orig_k.split("-")
+            tl_syls = [to_tl(x) for x in orig_syls]
+            k = "-".join(tl_syls)
+            
+            # k = process_key(kv[0])
             v = process_value(kv[1])
             
             combined_kv = "%s%s" % (k, v)
