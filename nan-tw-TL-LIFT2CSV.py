@@ -13,7 +13,6 @@ OE_RE = re.compile("oe")
 OA_RE = re.compile("oa")
 EK_RE = re.compile("ek(.?)$")
 ENG_RE = re.compile("eng(.?)$")
-OH_RE = re.compile("oh(.?)$")
 
 def to_tl(s):
     r = OU_RE.sub("oo", s)
@@ -22,7 +21,6 @@ def to_tl(s):
     r = OA_RE.sub("ue", r)
     r = EK_RE.sub("ik\g<1>", r)
     r = ENG_RE.sub("ing\g<1>", r)
-    r = OH_RE.sub("ouh\g<1>", r)
     return r
 
 
