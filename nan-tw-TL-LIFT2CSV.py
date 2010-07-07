@@ -58,9 +58,13 @@ def decompose_syllable(s):
 
 # process the key, such as bîn-á-tsài to bin5-a2-tsai3
 def process_key(key):
-    keys = key.split("-")
-    new_keys = [decompose_syllable(x) for x in keys]
-    return "-".join(new_keys)
+    new_combined_keys = []
+    for k in key:    
+        keys = k.split("-")
+        new_keys = [decompose_syllable(x) for x in keys]
+        new_combined_keys += ["-".join(new_keys)]
+            
+    return " ".join(new_combined_keys)
 
 # sanitize the kanji part
 def process_value(value):
@@ -106,13 +110,12 @@ def end_element(name):
         kv = sanitized_line.split(" ")
 
         if len(kv) > 1:        
-            orig_k = process_key(kv[0])
+            orig_k = process_key(kv[0:-1])
             orig_syls = orig_k.split("-")
             tl_syls = [to_tl(x) for x in orig_syls]
             k = "-".join(tl_syls)
             
-            # k = process_key(kv[0])
-            v = process_value(kv[1])
+            v = process_value(kv[-1])
             
             combined_kv = "%s%s" % (k, v)
             if dedup_table.has_key(combined_kv):
