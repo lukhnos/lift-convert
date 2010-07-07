@@ -110,13 +110,14 @@ def end_element(name):
         kv = sanitized_line.split(" ")
 
         if len(kv) > 1:        
-            orig_k = process_key(kv[0:-1])
+            orig_k = process_key(kv[0:-1]).split(" ")
             
             k = []
-            for orig_k_spaced in orig_k:            
+            for orig_k_spaced in orig_k:
                 orig_syls = orig_k_spaced.split("-")
                 tl_syls = [to_tl(x) for x in orig_syls]
                 k += ["-".join(tl_syls)]
+            k = " ".join(k)
                 
             v = process_value(kv[-1])
             
