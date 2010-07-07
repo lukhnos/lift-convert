@@ -111,10 +111,13 @@ def end_element(name):
 
         if len(kv) > 1:        
             orig_k = process_key(kv[0:-1])
-            orig_syls = orig_k.split("-")
-            tl_syls = [to_tl(x) for x in orig_syls]
-            k = "-".join(tl_syls)
             
+            k = []
+            for orig_k_spaced in orig_k:            
+                orig_syls = orig_k_spaced.split("-")
+                tl_syls = [to_tl(x) for x in orig_syls]
+                k += ["-".join(tl_syls)]
+                
             v = process_value(kv[-1])
             
             combined_kv = "%s%s" % (k, v)
